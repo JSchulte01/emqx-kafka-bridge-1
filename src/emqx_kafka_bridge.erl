@@ -17,7 +17,7 @@
 -include("emqx_kafka_bridge.hrl").
 
 -include("emqx.hrl").
--include("logger.hrl").
+% -include("logger.hrl").
 
 -export([ register_metrics/0
         , load/1
@@ -78,7 +78,7 @@ produce_kafka_message(Topic, Message, ClientId, _Env) ->
     Key = iolist_to_binary(ClientId),
     Partition = getPartition(Key),
     Message1 = jsx:encode(Message),
-    ?LOG(error, "Topic:~p, params:~p", [Topic, Message1]),
+    % ?LOG(error, "Topic:~p, params:~p", [Topic, Message1]),
     ok = brod:produce_sync(brod_client_1, Topic, Partition, ClientId, Message1),
     % emqx_metrics:inc('bridge.kafka.publish'),
     ok.
