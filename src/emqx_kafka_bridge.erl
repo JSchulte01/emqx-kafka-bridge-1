@@ -86,6 +86,7 @@ produce_kafka_message(Topic, Message, ClientId, _Env) ->
 %% Called when the plugin application start
 load(Env) ->
     brod_load([Env]),
+    emqx:hook('message.publish', {?MODULE, on_message_publish, [Env]}).
     % emqx:hook('client.authenticate', fun ?MODULE:on_client_authenticate/2, [Env]),
     % emqx:hook('client.check_acl', fun ?MODULE:on_client_check_acl/5, [Env]),
     % emqx:hook('client.connected', fun ?MODULE:on_client_connected/4, [Env]),
@@ -97,7 +98,6 @@ load(Env) ->
     % emqx:hook('session.subscribed', fun ?MODULE:on_session_subscribed/4, [Env]),
     % emqx:hook('session.unsubscribed', fun ?MODULE:on_session_unsubscribed/4, [Env]),
     % emqx:hook('session.terminated', fun ?MODULE:on_session_terminated/3, [Env]),
-    emqx:hook('message.publish', {?MODULE, on_message_publish, [Env]}).
     % emqx:hook('message.deliver', fun ?MODULE:on_message_deliver/3, [Env]),
     % emqx:hook('message.acked', fun ?MODULE:on_message_acked/3, [Env]),
     % emqx:hook('message.dropped', fun ?MODULE:on_message_dropped/3, [Env]).
@@ -177,7 +177,7 @@ on_message_publish(Message, _Env) ->
 %% Called when the plugin application stop
 unload() ->
     brod_unload(),
-    emqx:unhook('message.publish', ?MODULE, on_message_publish}).
+    emqx:unhook('message.publish', {?MODULE, on_message_publish}).
     % emqx:unhook('client.authenticate', fun ?MODULE:on_client_authenticate/2),
     % emqx:unhook('client.check_acl', fun ?MODULE:on_client_check_acl/5),
     % emqx:unhook('client.connected', fun ?MODULE:on_client_connected/4),
