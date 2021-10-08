@@ -177,7 +177,7 @@ on_message_publish(Message, _Env) ->
 %% Called when the plugin application stop
 unload() ->
     brod_unload(),
-    emqx:hook('message.publish', {?MODULE:on_message_publish, [Env]}).
+    emqx:hook('message.publish', {?MODULE:on_message_publish}).
     % emqx:unhook('client.authenticate', fun ?MODULE:on_client_authenticate/2),
     % emqx:unhook('client.check_acl', fun ?MODULE:on_client_check_acl/5),
     % emqx:unhook('client.connected', fun ?MODULE:on_client_connected/4),
