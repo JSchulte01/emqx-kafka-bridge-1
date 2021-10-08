@@ -16,8 +16,8 @@
 
 -include("emqx_kafka_bridge.hrl").
 
--include("emqx/include/emqx.hrl").
--include("emqx/include/logger.hrl").
+-include("emqx.hrl").
+-include("logger.hrl").
 
 -export([ register_metrics/0
         , load/1
