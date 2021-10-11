@@ -153,9 +153,10 @@ load(Env) ->
 on_message_publish(Message = #message{topic = <<"$SYS/", _/binary>>}, _Env) ->
     {ok, Message};
 
+% refer include/emqx.hrl for the definition of the message topic
 on_message_publish(Message, _Env) ->
     io:format("Publish ~s~n", [emqx_message:format(Message)]),
-    produce_kafka_message(<<"client_connected">>, Message, <<"1">>, _Env),
+    produce_kafka_message(#Message.topic, #Message.payload, #Message.from, _Env),
     {ok, Message}.
 
 % on_message_deliver(#{client_id := ClientId}, Message, _Env) ->
