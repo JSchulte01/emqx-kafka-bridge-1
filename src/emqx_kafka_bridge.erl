@@ -77,9 +77,8 @@ getPartition(Key) ->
 produce_kafka_message(Topic, Message, ClientId, _Env) ->
     Key = iolist_to_binary(ClientId),
     Partition = getPartition(Key),
-    Message1 = jsx:encode(Message),
     % ?LOG(error, "Topic:~p, params:~p", [Topic, Message1]),
-    ok = brod:produce_sync(brod_client_1, Topic, Partition, ClientId, Message1),
+    ok = brod:produce_sync(brod_client_1, Topic, Partition, ClientId, Message),
     % emqx_metrics:inc('bridge.kafka.publish'),
     ok.
 
