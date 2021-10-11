@@ -62,6 +62,8 @@ brod_load(_Env) ->
     % emqx_metrics:inc('bridge.kafka.connected'),
     io:format("load brod with ~p~n", [KafkaBootstrapEndpoints]).
 
+
+
 brod_unload() ->
     application:stop(brod),
     % emqx_metrics:inc('bridge.kafka.disconnected'),
@@ -78,7 +80,9 @@ produce_kafka_message(Topic, Message, ClientId, _Env) ->
     Key = iolist_to_binary(ClientId),
     Partition = getPartition(Key),
     % ?LOG(error, "Topic:~p, params:~p", [Topic, Message1]),
-    ok = brod:produce_sync(brod_client_1, Topic, Partition, ClientId, Message),
+    MapMessage = emqx_message:to_map(),
+    EncodedMessage = jiffy:encode(MapMessage),
+    ok = brod:produce_sync(brod_client_1, Topic, Partition, ClientId, EncodedMessage),
     % emqx_metrics:inc('bridge.kafka.publish'),
     ok.
 
@@ -153,10 +157,9 @@ load(Env) ->
 on_message_publish(Message = #message{topic = <<"$SYS/", _/binary>>}, _Env) ->
     {ok, Message};
 
-% refer include/emqx.hrl for the definition of the message topic
 on_message_publish(Message, _Env) ->
     io:format("Publish ~s~n", [emqx_message:format(Message)]),
-    produce_kafka_message(#Message.topic, #Message.payload, #Message.from, _Env),
+    produce_kafka_message(<<"client_connected">>, Message, <<"1">>, _Env),
     {ok, Message}.
 
 % on_message_deliver(#{client_id := ClientId}, Message, _Env) ->
